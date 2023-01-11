@@ -1,43 +1,82 @@
-import { Component } from "react";
+// import { Component } from "react";
 import PropTypes from 'prop-types';
 import styles from './Modal.module.css';
+import { useEffect } from 'react';
 
-
-export default class Modal extends Component{
-
-    componentDidMount() {
-        window.addEventListener('keydown', this.handleKeyDown);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.handleKeyDown);
-    }
-   
-    handleKeyDown = e => {
-        if (e.code === 'Escape') {
-            this.props.onToggleModal();
-        }
+function Modal({largeImageURL, onToggleModal}){
+  useEffect(() => {
+    const handleKeyDown = evt => {
+      if( evt.code === 'Escape'){
+        onToggleModal();
+      }
     };
 
-    handleBackdropClick = e => {
-        if (e.currentTarget === e.target) {
-            this.props.onToggleModal();
-        }
-    };
+    window.addEventListener('keydown', handleKeyDown);
 
-    render() {
-        const { largeImageURL } = this.props;
-        
-        return (
-            <div className={styles.Overlay} onClick={this.handleBackdropClick}>
-                <div className={styles.Modal}>
-                    <img src={largeImageURL} alt="" />
-                </div>
-            </div>
-        );
-     }
-}
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onToggleModal]);
+
+  const handleBackdropClick= evt =>{
+    if (evt.currentTarget === evt.target) {
+    onToggleModal();
+   }
+  };
+
+  return (
+    <div className={styles.Overlay} onClick={handleBackdropClick}>
+        <div className={styles.Modal}>
+             <img src={largeImageURL} alt="" />
+         </div>
+     </div>
+      );
+
+};
 
 Modal.propTypes = {
 onToggleModal:PropTypes.func.isRequired,
 };
+
+export default Modal;
+
+
+
+// export default class Modal extends Component{
+
+//     componentDidMount() {
+//         window.addEventListener('keydown', this.handleKeyDown);
+//     }
+
+//     componentWillUnmount() {
+//         window.removeEventListener('keydown', this.handleKeyDown);
+//     }
+
+//     handleKeyDown = e => {
+//         if (e.code === 'Escape') {
+//             this.props.onToggleModal();
+//         }
+//     };
+
+//     handleBackdropClick = e => {
+//         if (e.currentTarget === e.target) {
+//             this.props.onToggleModal();
+//         }
+//     };
+
+//     render() {
+//         const { largeImageURL } = this.props;
+
+//         return (
+//             <div className={styles.Overlay} onClick={this.handleBackdropClick}>
+//                 <div className={styles.Modal}>
+//                     <img src={largeImageURL} alt="" />
+//                 </div>
+//             </div>
+//         );
+//      }
+// }
+
+// Modal.propTypes = {
+// onToggleModal:PropTypes.func.isRequired,
+// };
